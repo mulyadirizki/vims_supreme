@@ -1,0 +1,13 @@
+// src/pages/NotFoundPage.tsx
+export default function NotFoundPage() {
+  return (
+    <div className="flex min-h-screen items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-6xl font-bold">404</h1>
+        <p className="mt-2 text-muted-foreground">
+          Page Not Found.
+        </p>
+      </div>
+    </div>
+  );
+}
