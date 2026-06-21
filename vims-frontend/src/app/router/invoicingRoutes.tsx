@@ -6,6 +6,7 @@ const InvoiceUploadPage = lazy(() => import("@/features/invoice/pages/InvoiceUpl
 const InvoiceOnProcessPage = lazy(() => import("@/features/invoice/pages/InvoiceOnProcessPage"));
 const InvoiceOnProcessDetailPage = lazy(() => import("@/features/invoice/pages/InvoiceOnProcessDetailPage"));
 const ReadyToPayPage = lazy(() => import("@/features/invoice/pages/ReadyToPayPage"));
+const InvoiceHistoryPage = lazy(() => import("@/features/invoice/pages/InvoiceHistoryPage"));
 
 export const invoicingRoutes: RouteObject[] = [
   {
@@ -24,8 +25,12 @@ export const invoicingRoutes: RouteObject[] = [
     path: "invoice/on-process/:invoiceReceiptNo",
     element: <InvoiceOnProcessDetailPage />,
   },
-    {
+  {
     path: "400409",
     element: <ReadyToPayPage />,
+  },
+  {
+    path: "400410",
+    element: <InvoiceHistoryPage />,
   },
 ];

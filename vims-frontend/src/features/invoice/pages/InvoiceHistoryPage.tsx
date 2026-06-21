@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Search, ChevronLeft, ChevronRight, CheckCircle2 } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, Eye } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -17,10 +18,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { InvoiceStatusBadge } from "../components/InvoiceStatusBadge"; // sesuaikan path
-import { ProcessPaymentDialog } from "../components/ProcessPaymentDialog";
-import { useReadyToPayList } from "../hooks/use-ready-to-pay-list";
-import type { ReadyToPayFilter } from "../types/invoice.types";
+import { InvoiceStatusBadge } from "../components/InvoiceStatusBadge";
+import { useInvoiceHistoryList } from "../hooks/use-invoice-history-list";
+import type { InvoiceHistoryFilter } from "../types/invoice.types";
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(value);
@@ -32,14 +32,29 @@ const formatDate = (value: string | null) => {
 };
 
 const PER_PAGE_OPTIONS = [10, 25, 50];
-const TABLE_HEADS = ["No. Pengajuan", "No. GR", "No. PO", "Supplier", "Tgl. Disetujui", "Grand Total", "Status", "Aksi"];
+const STATUS_OPTIONS = [
+  { value: "all", label: "All" },
+  { value: "APPROVED", label: "APPROVED" },
+  { value: "PAID", label: "PAID" },
+];
+const TABLE_HEADS = [
+  "No. Pengajuan",
+  "No. GR",
+  "No. PO",
+  "Supplier",
+  "Tgl. Disetujui",
+  "Tgl. Bayar",
+  "Grand Total",
+  "Status",
+  "Aksi",
+];
 
-export default function ReadyToPayPage() {
+export default function InvoiceHistoryPage() {
+  const navigate = useNavigate();
   const [searchInput, setSearchInput] = useState("");
-  const [filter, setFilter] = useState<ReadyToPayFilter>({ page: 1, per_page: 10 });
-  const [selectedInvoiceNo, setSelectedInvoiceNo] = useState<string | null>(null);
+  const [filter, setFilter] = useState<InvoiceHistoryFilter>({ page: 1, per_page: 10 });
 
-  const { data, isLoading, isError } = useReadyToPayList(filter);
+  const { data, isLoading, isError } = useInvoiceHistoryList(filter);
 
   const list = data?.data ?? [];
   const pagination = data?.pagination;
@@ -58,6 +73,14 @@ export default function ReadyToPayPage() {
     if (e.key === "Enter") handleSearch();
   };
 
+  const handleStatusChange = (val: string) => {
+    setFilter((prev) => ({
+      ...prev,
+      status: val === "all" ? undefined : (val as "APPROVED" | "PAID"),
+      page: 1,
+    }));
+  };
+
   const handlePerPageChange = (val: string) => {
     setFilter((prev) => ({ ...prev, per_page: Number(val), page: 1 }));
   };
@@ -69,8 +92,8 @@ export default function ReadyToPayPage() {
   return (
     <div className="flex flex-col gap-4 h-full">
       <div>
-        <h1 className="text-[15px] font-bold text-gray-800">Ready to Pay</h1>
-        <p className="text-[11px] text-gray-400 mt-0.5">Invoice yang sudah disetujui dan menunggu pembayaran</p>
+        <h1 className="text-[15px] font-bold text-gray-800">Invoice History</h1>
+        <p className="text-[11px] text-gray-400 mt-0.5">Riwayat invoice yang sudah disetujui maupun sudah dibayarkan</p>
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
@@ -87,12 +110,26 @@ export default function ReadyToPayPage() {
         <Button onClick={handleSearch} className="h-8 px-3 text-[12px] bg-blue-600 hover:bg-blue-700 text-white">
           Cari
         </Button>
+
+        <Select value={filter.status ?? "all"} onValueChange={handleStatusChange}>
+          <SelectTrigger className="h-8 w-40 text-[12px] border-gray-200">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {STATUS_OPTIONS.map((opt) => (
+              <SelectItem key={opt.value} value={opt.value} className="text-[12px]">
+                {opt.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
         <span className="text-[11px] text-gray-400 ml-auto">{total} data</span>
       </div>
 
       <div className="rounded-lg border border-gray-100 bg-white flex flex-col overflow-hidden" style={{ minHeight: 0 }}>
         <div className="overflow-auto flex-1">
-          <Table className="min-w-[1000px] w-full">
+          <Table className="min-w-[1100px] w-full">
             <TableHeader>
               <TableRow className="bg-gray-50 hover:bg-gray-50 sticky top-0 z-10">
                 {TABLE_HEADS.map((h, i) => (
@@ -110,7 +147,7 @@ export default function ReadyToPayPage() {
             <TableBody>
               {isLoading && (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-16">
+                  <TableCell colSpan={9} className="text-center py-16">
                     <div className="flex items-center justify-center gap-2 text-gray-400 text-[12px]">
                       <div className="w-4 h-4 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
                       Memuat data...
@@ -120,15 +157,15 @@ export default function ReadyToPayPage() {
               )}
               {isError && (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-16 text-red-400 text-[12px]">
+                  <TableCell colSpan={9} className="text-center py-16 text-red-400 text-[12px]">
                     Gagal memuat data. Silakan refresh halaman.
                   </TableCell>
                 </TableRow>
               )}
               {!isLoading && !isError && list.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-16 text-gray-400 text-[12px]">
-                    Tidak ada invoice yang siap dibayar.
+                  <TableCell colSpan={9} className="text-center py-16 text-gray-400 text-[12px]">
+                    Tidak ada riwayat invoice.
                   </TableCell>
                 </TableRow>
               )}
@@ -147,6 +184,9 @@ export default function ReadyToPayPage() {
                     <TableCell className="text-[11px] text-gray-500 whitespace-nowrap py-2.5">
                       {formatDate(item.confirmDate)}
                     </TableCell>
+                    <TableCell className="text-[11px] text-gray-500 whitespace-nowrap py-2.5">
+                      {formatDate(item.paymentDate)}
+                    </TableCell>
                     <TableCell className="text-[11px] font-semibold text-gray-800 whitespace-nowrap py-2.5 text-right">
                       {formatCurrency(item.totals.grandTotal)}
                     </TableCell>
@@ -156,11 +196,12 @@ export default function ReadyToPayPage() {
                     <TableCell className="py-2.5 text-right">
                       <Button
                         size="sm"
-                        className="h-7 px-2.5 text-[11px] bg-blue-600 hover:bg-blue-700 text-white gap-1"
-                        onClick={() => setSelectedInvoiceNo(item.invoiceReceiptNo)}
+                        variant="outline"
+                        className="h-7 px-2.5 text-[11px] border-gray-200 gap-1"
+                        onClick={() => navigate(`/portal/invoice/on-process/${item.invoiceReceiptNo}`)}
                       >
-                        <CheckCircle2 className="w-3 h-3" />
-                        Proses
+                        <Eye className="w-3 h-3" />
+                        Detail
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -199,12 +240,6 @@ export default function ReadyToPayPage() {
           </div>
         </div>
       </div>
-
-      <ProcessPaymentDialog
-        invoiceReceiptNo={selectedInvoiceNo}
-        open={!!selectedInvoiceNo}
-        onClose={() => setSelectedInvoiceNo(null)}
-      />
     </div>
   );
 }

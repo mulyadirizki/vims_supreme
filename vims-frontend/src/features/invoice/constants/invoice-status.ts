@@ -1,6 +1,4 @@
-import type { InvoiceStatus } from "../types/invoice.types";
-
-export const INVOICE_STATUS_VARIANT: Record<InvoiceStatus["code"], string> = {
+export const INVOICE_STATUS_VARIANT: Record<string, string> = {
   not_processed: "secondary",
   processed: "default",
 };

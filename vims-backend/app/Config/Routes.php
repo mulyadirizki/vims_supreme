@@ -10,6 +10,7 @@ use App\Controllers\Invoice\ReadyToInvoiceController;
 use App\Controllers\Invoice\InvoiceReceiptController;
 use App\Controllers\Invoice\InvoiceOnProcessController;
 use App\Controllers\Invoice\ReadyToPayController;
+use App\Controllers\Invoice\InvoiceHistoryController;
 
 /** @var RouteCollection $routes */
 $routes->get('/', 'Home::index');
@@ -49,6 +50,9 @@ $routes->group('api', function ($routes) {
         $routes->post('on-process/reject/(:segment)', [InvoiceOnProcessController::class, 'reject/$1']);
 
         $routes->post('ready-to-pay/list', [ReadyToPayController::class, 'index']);
+        $routes->post('ready-to-pay/process', [ReadyToPayController::class, 'processPayment']);
+
+        $routes->post('history/list', [InvoiceHistoryController::class, 'index']);
     });
 
     $routes->group('goods-receive', ['filter' => 'auth'], function ($routes) {

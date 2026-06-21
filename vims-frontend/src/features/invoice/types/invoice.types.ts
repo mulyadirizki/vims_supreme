@@ -226,3 +226,37 @@ export interface ReadyToPayListResponse {
   data: ReadyToPayItem[];
   pagination: InvoiceOnProcessPagination;
 }
+
+export interface ProcessPaymentPayload {
+  invoiceReceiptNo: string;
+  paymentDate: string; // yyyy-mm-dd
+  remark?: string;
+  paymentProof: File;
+}
+
+export interface ProcessPaymentResponse {
+  status: boolean;
+  message: string;
+  data: {
+    invoiceReceiptNo: string;
+  };
+}
+
+export interface InvoiceHistoryFilter {
+  gr_no?: string;
+  po_no?: string;
+  invoice_receipt_no?: string;
+  status?: "APPROVED" | "PAID";
+  page: number;
+  per_page: number;
+}
+
+export interface InvoiceHistoryItem extends InvoiceOnProcessItem {
+  paymentDate: string | null;
+}
+
+export interface InvoiceHistoryListResponse {
+  status: boolean;
+  data: InvoiceHistoryItem[];
+  pagination: InvoiceOnProcessPagination;
+}

@@ -34,4 +34,27 @@ class InvoiceReceiptRepository
         $this->model->insert($data);
         return (int) $this->model->getInsertID();
     }
+
+    public function findByNoForUpdate(string $invoiceReceiptNo): ?array
+    {
+        $db = db_connect();
+
+        $query = $db->query(
+            'SELECT * FROM invoice_receipt WHERE invoice_receipt_no = ? FOR UPDATE',
+            [$invoiceReceiptNo]
+        );
+
+        $row = $query->getFirstRow('array');
+
+        return $row ?: null;
+    }
+
+    public function updateStatus(string $invoiceReceiptNo, array $data): bool
+    {
+        $db = db_connect();
+
+        return $db->table('invoice_receipt')
+            ->where('invoice_receipt_no', $invoiceReceiptNo)
+            ->update($data);
+    }
 }

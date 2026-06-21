@@ -3,11 +3,12 @@
 namespace App\Services\Invoice;
 
 use App\Traits\UploadTrait;
+use App\Constants\InvoiceReceiptStatus;
 use App\Models\InvoiceReceipt\InvoiceReceiptAttachmentModel;
 use App\Repositories\Invoice\InvoiceReceiptRepository;
 use App\Repositories\GoodsReceive\ReadyToInvoiceRepository;
 use App\DTOs\Invoice\StoreInvoiceReceiptDto;
-use App\Constants\InvoiceReceiptStatus;
+use App\DTOs\Invoice\ProcessPaymentDto;
 
 class InvoiceReceiptService
 {
@@ -102,4 +103,5 @@ class InvoiceReceiptService
             throw $e;
         }
     }
+
 }

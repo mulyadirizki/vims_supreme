@@ -1,11 +1,15 @@
-import type { InvoiceStatus } from "../types/invoice.types";
 import { INVOICE_STATUS_VARIANT } from "../constants/invoice-status";
 
-interface InvoiceStatusBadgeProps {
-  status: InvoiceStatus;
+type BadgeVariant = "default" | "secondary" | "destructive" | "outline";
+
+interface StatusLike {
+  code: string;
+  label: string;
 }
 
-type BadgeVariant = "default" | "secondary" | "destructive" | "outline";
+interface InvoiceStatusBadgeProps {
+  status: StatusLike;
+}
 
 const VARIANT_STYLES: Record<BadgeVariant, string> = {
   default: "bg-blue-50 text-blue-600",
