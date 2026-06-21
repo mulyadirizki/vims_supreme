@@ -151,6 +151,7 @@ export default function InvoiceOnProcessDetailPage() {
         toast.success("Invoice berhasil disetujui", {
           description: `No. Pengajuan: ${invoice?.invoiceReceiptNo}`,
         });
+        navigate("/portal/400409");
       },
       onError: (error) => {
         toast.error("Gagal menyetujui invoice", {
@@ -171,6 +172,7 @@ export default function InvoiceOnProcessDetailPage() {
           toast.success("Invoice berhasil ditolak", {
             description: `No. Pengajuan: ${invoice?.invoiceReceiptNo}`,
           });
+          navigate("/portal/400408");
         },
         onError: (error) => {
           toast.error("Gagal menolak invoice", {
