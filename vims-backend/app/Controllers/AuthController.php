@@ -69,8 +69,11 @@ class AuthController extends BaseController
 
             $sidebar = $this->sidebarService->getSidebar($groupId);
 
+            $userData = AuthTransform::login($user)['user'];
+            $userData['group_id'] = $groupId; // ← tambahan, tidak ganggu field lain
+
             return $this->success([
-                'user' => AuthTransform::login($user)['user'],
+                'user' => $userData,
                 'sidebar' => $sidebar
             ], 'OK');
 

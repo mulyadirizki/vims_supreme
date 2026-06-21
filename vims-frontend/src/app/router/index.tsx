@@ -14,7 +14,7 @@ import DashboardPage from "@/features/dashboard/pages/DashboardPage";
 // ── Module routes ─────────────────────────────────────────────────────────────
 // import { systemAdminRoutes }   from "./systemAdminRoutes";
 import { purchaseOrderRoutes } from "./purchaseOrderRoutes";
-// import { invoicingRoutes }     from "./invoicingRoutes";
+import { invoicingRoutes }     from "./invoicingRoutes";
 // import { goodsReturnRoutes }   from "./goodsReturnRoutes";
 // import { rebateRoutes }        from "./rebateRoutes";
 // import { paymentRoutes }       from "./paymentRoutes";
@@ -74,7 +74,7 @@ export const router = createBrowserRouter([
           ...wrapSuspense([
             // ...systemAdminRoutes,
             ...purchaseOrderRoutes,
-            // ...invoicingRoutes,
+            ...invoicingRoutes,
             // ...goodsReturnRoutes,
             // ...rebateRoutes,
             // ...paymentRoutes,

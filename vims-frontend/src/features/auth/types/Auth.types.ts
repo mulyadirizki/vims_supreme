@@ -42,3 +42,13 @@ export interface LoginResponse {
     sidebar: SidebarMenu[];
   };
 }
+
+export interface User {
+  id: string;
+  username: string;
+  fullname: string | null;
+  email: string;
+  group: string;
+  group_id: number; // ← tambahan
+  user_type: string;
+}
