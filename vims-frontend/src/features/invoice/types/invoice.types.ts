@@ -208,3 +208,21 @@ export interface InvoiceUpdatePayload {
 export interface InvoiceRejectPayload {
   reject_reason: string;
 }
+
+export interface ReadyToPayFilter {
+  gr_no?: string;
+  po_no?: string;
+  invoice_receipt_no?: string;
+  page: number;
+  per_page: number;
+}
+
+export interface ReadyToPayItem extends InvoiceOnProcessItem {
+  paymentDate: string | null;
+}
+
+export interface ReadyToPayListResponse {
+  status: boolean;
+  data: ReadyToPayItem[];
+  pagination: InvoiceOnProcessPagination;
+}

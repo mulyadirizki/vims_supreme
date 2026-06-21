@@ -3,15 +3,18 @@
 use CodeIgniter\Router\RouteCollection;
 
 use App\Controllers\AuthController;
+use App\Controllers\FileController;
 use App\Controllers\PurchaseOrder\PurchaseOrderController;
 use App\Controllers\GoodsReceive\GoodsReceiveController;
 use App\Controllers\Invoice\ReadyToInvoiceController;
 use App\Controllers\Invoice\InvoiceReceiptController;
 use App\Controllers\Invoice\InvoiceOnProcessController;
+use App\Controllers\Invoice\ReadyToPayController;
 
 /** @var RouteCollection $routes */
 $routes->get('/', 'Home::index');
 
+$routes->addPlaceholder('filepath', '.+');
 $routes->group('api', function ($routes) {
 
     $routes->group('auth', function ($routes) {
@@ -19,6 +22,12 @@ $routes->group('api', function ($routes) {
         $routes->post('login', [AuthController::class, 'login']);
         $routes->get('me', [AuthController::class, 'me']);
         $routes->post('logout', [AuthController::class, 'logout']);
+    });
+
+    
+    $routes->group('', ['filter' => 'auth'], function($routes) {
+    
+        $routes->get('file/preview/(:filepath)', [FileController::class, 'previewByPath/$1']);
     });
 
     $routes->group('purchase-orders', ['filter' => 'auth'], function ($routes) {
@@ -38,6 +47,8 @@ $routes->group('api', function ($routes) {
         $routes->put('on-process/update/(:segment)', [InvoiceOnProcessController::class, 'update/$1']);
         $routes->post('on-process/approve/(:segment)', [InvoiceOnProcessController::class, 'approve/$1']);
         $routes->post('on-process/reject/(:segment)', [InvoiceOnProcessController::class, 'reject/$1']);
+
+        $routes->post('ready-to-pay/list', [ReadyToPayController::class, 'index']);
     });
 
     $routes->group('goods-receive', ['filter' => 'auth'], function ($routes) {

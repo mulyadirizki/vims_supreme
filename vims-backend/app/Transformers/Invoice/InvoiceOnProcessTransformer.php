@@ -35,6 +35,7 @@ class InvoiceOnProcessTransformer
             'rejectReason' => $row['reject_reason'] ?? null,
             'rejectDate' => $row['reject_date'] ?? null,
             'userConfirm' => $row['user_confirm'] ?? null,
+            'paymentDate' => $row['payment_date'] ?? null,
         ];
     }
 }
